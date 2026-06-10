@@ -109,9 +109,6 @@ export default function RegisterPage() {
       </div>
 
       <style jsx>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0f0f1a; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
-
         .container {
           min-height: 100vh;
           display: flex;

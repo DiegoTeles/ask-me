@@ -102,7 +102,6 @@ export default function DashboardPage() {
     return (
       <main className="container">
         <div className="spinner-wrap"><div className="spinner" /></div>
-        <style jsx global>{`* { box-sizing: border-box; margin: 0; padding: 0; } body { background: #0f0f1a; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }`}</style>
         <style jsx>{`.container { min-height: 100vh; display: flex; align-items: center; justify-content: center; } .spinner-wrap { display: flex; align-items: center; justify-content: center; } .spinner { width: 32px; height: 32px; border: 3px solid rgba(139,92,246,0.2); border-top-color: #7c3aed; border-radius: 50%; animation: spin 0.8s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </main>
     )
@@ -231,11 +230,6 @@ export default function DashboardPage() {
           </button>
         </div>
       )}
-
-      <style jsx global>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0f0f1a; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
-      `}</style>
 
       <style jsx>{`
         .container { max-width: 680px; margin: 0 auto; padding: 0 20px 80px; display: flex; flex-direction: column; gap: 28px; }

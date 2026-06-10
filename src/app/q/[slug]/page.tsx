@@ -2,14 +2,16 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import sql from '@/lib/db'
 import ShareButtons from '@/components/ShareButtons'
+import styles from './page.module.css'
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
   const [q] = await sql`
-    SELECT content, answer FROM questions WHERE slug = ${params.slug}
+    SELECT content, answer FROM questions WHERE slug = ${slug}
   `
   if (!q) return { title: 'Pergunta não encontrada' }
 
@@ -20,17 +22,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: q.answer ? q.answer.slice(0, 120) : 'Aguardando resposta...',
     openGraph: {
       images: q.answer
-        ? [`${appUrl}/api/og?slug=${params.slug}&format=feed`]
+        ? [`${appUrl}/api/og?slug=${slug}&format=feed`]
         : [],
     },
   }
 }
 
 export default async function QuestionPage({ params }: Props) {
+  const { slug } = await params
   const [q] = await sql`
     SELECT slug, content, answer, answered_at, created_at
     FROM questions
-    WHERE slug = ${params.slug}
+    WHERE slug = ${slug}
   `
 
   if (!q) notFound()
@@ -38,13 +41,13 @@ export default async function QuestionPage({ params }: Props) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL
 
   return (
-    <main className="container">
-      <a href="/" className="back-link">← Fazer uma pergunta</a>
+    <main className={styles.container}>
+      <a href="/" className={styles.backLink}>← Fazer uma pergunta</a>
 
-      <div className="question-card">
-        <div className="badge">Pergunta anônima</div>
-        <p className="question-text">{q.content}</p>
-        <span className="meta">
+      <div className={styles.questionCard}>
+        <div className={styles.badge}>Pergunta anônima</div>
+        <p className={styles.questionText}>{q.content}</p>
+        <span className={styles.meta}>
           {new Date(q.created_at).toLocaleDateString('pt-BR', {
             day: 'numeric', month: 'long', year: 'numeric'
           })}
@@ -53,9 +56,9 @@ export default async function QuestionPage({ params }: Props) {
 
       {q.answer ? (
         <>
-          <div className="answer-card">
-            <div className="answer-label">Resposta</div>
-            <p className="answer-text">{q.answer}</p>
+          <div className={styles.answerCard}>
+            <div className={styles.answerLabel}>Resposta</div>
+            <p className={styles.answerText}>{q.answer}</p>
           </div>
 
           <ShareButtons
@@ -65,96 +68,12 @@ export default async function QuestionPage({ params }: Props) {
           />
         </>
       ) : (
-        <div className="pending-card">
-          <div className="spinner" />
+        <div className={styles.pendingCard}>
+          <div className={styles.spinner} />
           <p>Ainda não respondi essa pergunta.</p>
           <span>Volte em breve!</span>
         </div>
       )}
-
-      <style jsx global>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-          background: #0f0f1a;
-          color: #f1f5f9;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          min-height: 100vh;
-        }
-        .container {
-          max-width: 560px;
-          margin: 0 auto;
-          padding: 40px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-        .back-link {
-          color: #64748b;
-          font-size: 14px;
-          text-decoration: none;
-        }
-        .back-link:hover { color: #c4b5fd; }
-        .badge {
-          display: inline-block;
-          background: rgba(139, 92, 246, 0.15);
-          border: 1px solid rgba(139, 92, 246, 0.4);
-          border-radius: 100px;
-          padding: 4px 14px;
-          font-size: 11px;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          color: #c4b5fd;
-          margin-bottom: 16px;
-        }
-        .question-card {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 20px;
-          padding: 32px;
-        }
-        .question-text {
-          font-size: 22px;
-          line-height: 1.5;
-          color: #f1f5f9;
-          margin-bottom: 12px;
-        }
-        .meta { font-size: 13px; color: #475569; }
-        .answer-label {
-          font-size: 11px;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: #8b5cf6;
-          margin-bottom: 16px;
-        }
-        .answer-card {
-          background: rgba(139, 92, 246, 0.06);
-          border: 1px solid rgba(139, 92, 246, 0.2);
-          border-radius: 20px;
-          padding: 32px;
-        }
-        .answer-text {
-          font-size: 18px;
-          line-height: 1.7;
-          color: #cbd5e1;
-        }
-        .pending-card {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-          padding: 48px 24px;
-          color: #64748b;
-          text-align: center;
-        }
-        .spinner {
-          width: 32px; height: 32px;
-          border: 2px solid rgba(139, 92, 246, 0.2);
-          border-top-color: #8b5cf6;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
     </main>
   )
 }

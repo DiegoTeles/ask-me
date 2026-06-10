@@ -16,9 +16,7 @@
     "nanoid": "^5.0.9",
     "next": "15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "satori": "^0.11.2",
-    "sharp": "^0.33.5"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

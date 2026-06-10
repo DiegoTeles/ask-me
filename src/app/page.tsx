@@ -1,3 +1,5 @@
+'use client'
+
 export default function HomePage() {
   return (
     <main className="container">
@@ -30,17 +32,6 @@ export default function HomePage() {
           <p>Um link único. Coloque na bio do Instagram, TikTok ou onde quiser.</p>
         </div>
       </section>
-
-      <style jsx global>{`
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-          background: #0f0f1a;
-          color: #f1f5f9;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-          min-height: 100vh;
-        }
-        a { color: inherit; }
-      `}</style>
 
       <style jsx>{`
         .container {
